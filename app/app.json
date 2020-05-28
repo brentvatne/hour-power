@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Hour Power",
+    "slug": "hour-power",
+    "scheme": "hourpower",
+    "platforms": ["ios", "android", "web"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#5a5b99"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "primaryColor": "#5a5b99",
+    "androidStatusBar": {
+      "translucent": false,
+      "barStyle": "light-content",
+      "backgroundColor": "#000"
+    },
+    "android": {
+      "package": "xyz.bront.hourpower",
+      "versionCode": 11,
+      "permissions": [],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/foreground.png",
+        "backgroundColor": "#5a5b99"
+      }
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "xyz.bront.hourpower"
+    }
+  }
+}

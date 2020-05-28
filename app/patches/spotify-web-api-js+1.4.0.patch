@@ -1,0 +1,12 @@
+diff --git a/node_modules/spotify-web-api-js/src/spotify-web-api.js b/node_modules/spotify-web-api-js/src/spotify-web-api.js
+index 7e7d86d..3dc1f85 100644
+--- a/node_modules/spotify-web-api-js/src/spotify-web-api.js
++++ b/node_modules/spotify-web-api-js/src/spotify-web-api.js
+@@ -1639,6 +1639,7 @@ var SpotifyWebApi = (function () {
+     });
+     var requestData = {
+       type: 'PUT',
++      contentType: 'application/json',
+       url: _baseUri + '/me/player/play',
+       params: params,
+       postData: postData
