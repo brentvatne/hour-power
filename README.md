@@ -22,7 +22,7 @@ Built using [Excalidraw](https://excalidraw.com/)
 - [Expo managed workflow](https://docs.expo.io/introduction/managed-vs-bare/) - built apps for store [using Expo build service](https://docs.expo.io/distribution/building-standalone-apps/)
 - [expo-updates](https://docs.expo.io/versions/latest/sdk/updates/) for over-the-air updates.
 - [@expo/google-fonts](https://github.com/expo/google-fonts) for including Google Fonts.
-- [@expo/vector-icons](https://docs.expo.io/guides/icons/) and the related [icon directory](https://icons.expo.fyi/)].
+- [@expo/vector-icons](https://docs.expo.io/guides/icons/) and the related [icon directory](https://icons.expo.fyi/).
 - [expo-auth-session](https://docs.expo.io/versions/latest/sdk/auth-session/) to authenticate with Spotify.
 - Splash screens and icons were generated using [Icon Builder](https://buildicon.netlify.app/).
 - [react-navigation](https://reactnavigation.org) with [createNativeStackNavigator](https://github.com/software-mansion/react-native-screens/tree/master/native-stack)
