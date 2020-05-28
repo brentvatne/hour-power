@@ -30,6 +30,7 @@ Built using [Excalidraw](https://excalidraw.com/)
 - [recoil](https://recoiljs.org/) via the [Naturalclar/recoil](https://github.com/Naturalclar/recoil) fork for shared state, in order to try it out in React Native (upstream support coming soon)
 - [spotify-web-api-js](https://github.com/JMPerez/spotify-web-api-js) for an easy-to-use, TypeScript compatible wrapper for the Spotify API.
 - [react-query](https://github.com/tannerlinsley/react-query) to make firing the API calls from components a pleasant experience.
+- Minimal backend for getting access token is built using [Vercel's](https://vercel.com/) [now.sh](https://now.sh/) serverless functions.
 - A bunch of other libraries for the things you'd expect them to be for, to name a few: @react-native-community/async-storage, @react-native-community/hooks, react-native-htmlview, react-native-safe-area-context
 
 ## Develop it on your machine
