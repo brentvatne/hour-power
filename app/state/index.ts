@@ -17,6 +17,17 @@ type PlaybackStatus = {
   elapsedTime: number;
 };
 
+type CurrentUser = {
+  isAuthenticated: boolean | null;
+};
+
+export const currentUserState = atom<CurrentUser>({
+  key: "CurrentUser",
+  default: {
+    isAuthenticated: null, // unknown if authenticated
+  },
+});
+
 export const playerSelectionState = atom<PlayerSelection>({
   key: "PlayerSelection",
   default: {

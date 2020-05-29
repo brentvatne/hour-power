@@ -12,14 +12,13 @@ import {
   Platform,
   Image,
   View,
-  Alert,
   Animated,
 } from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "react-query";
 import { useSafeArea } from "react-native-safe-area-context";
-import { useResetRecoilState, useRecoilState } from "recoil";
+import { useResetRecoilState, useSetRecoilState, useRecoilState } from "recoil";
 import { Fontisto } from "@expo/vector-icons";
 
 import * as Button from "../components/Button";
@@ -33,7 +32,11 @@ import PlayerStatusBottomControl, {
 } from "../components/PlayerStatusBottomControl";
 import { fetchPlaylistsAsync, fetchTracksAsync, Playlist, Track } from "../api";
 import { PlaylistItem } from "../components/playlists";
-import { playbackStatusState, playerSelectionState } from "../state";
+import {
+  playbackStatusState,
+  playerSelectionState,
+  currentUserState,
+} from "../state";
 import { colors, images } from "../styleguide";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -43,11 +46,14 @@ function MyPlaylistsHeader(props: any) {
   const navigation = useNavigation();
   const resetPlayerSelection = useResetRecoilState(playerSelectionState);
   const resetPlaybackStatus = useResetRecoilState(playbackStatusState);
+  const setCurrentUser = useSetRecoilState(currentUserState);
 
   const clearAllState = useCallback(() => {
     LocalStorage.clearAsync();
     resetPlaybackStatus();
     resetPlayerSelection();
+    // We can't reset isAuthenticated or it will become null... Need to reset to false
+    setCurrentUser({ isAuthenticated: false });
     // @ts-ignore
     navigation.replace("SignIn");
   }, [navigation, resetPlaybackStatus, resetPlayerSelection]);

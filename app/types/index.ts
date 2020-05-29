@@ -8,6 +8,7 @@ export type Credentials = {
 
 export type PersistedData = {
   credentials: Credentials;
+  [key: string]: any;
 };
 
 // JSON type

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { Dimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 import { useSafeArea } from "react-native-safe-area-context";
+import { currentUserState } from "../state";
+import { useRecoilState } from "recoil";
 
 import * as Text from "../components/Text";
 import * as Spacer from "../components/Spacer";
@@ -11,11 +12,16 @@ import useSpotifyAuth from "../hooks/useSpotifyAuth";
 
 export default function SignIn({ navigation }: any) {
   const { isAuthenticated, error, authenticateAsync } = useSpotifyAuth();
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const insets = useSafeArea();
 
   useEffect(() => {
+    navigation.replace("MyPlaylists");
+  }, [currentUser.isAuthenticated]);
+
+  useEffect(() => {
     if (isAuthenticated) {
-      navigation.replace("MyPlaylists");
+      setCurrentUser({ isAuthenticated: true });
     }
   }, [isAuthenticated]);
 

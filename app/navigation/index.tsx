@@ -5,37 +5,21 @@ import { createNativeStackNavigator } from "react-native-screens/native-stack";
 import { enableScreens } from "react-native-screens";
 import { useRecoilState } from "recoil";
 
-import { PersistedData } from "../types";
 import SignIn from "../screens/SignIn";
 import MyPlaylists from "../screens/MyPlaylists";
 import DevicePicker from "../screens/DevicePicker";
 import PlayerController from "../screens/PlayerController";
-import { playerSelectionState } from "../state";
+import { playerSelectionState, currentUserState } from "../state";
 
 enableScreens();
 const RootStack = createNativeStackNavigator();
 const PlayerStack = createNativeStackNavigator();
 
-type Props = {
-  initialData: null | PersistedData;
-};
+export function Root() {
+  const [currentUser] = useRecoilState(currentUserState);
 
-export function Root(props: Props) {
-  return (
-    <RootStack.Navigator
-      initialRouteName={
-        props.initialData?.credentials?.token ? "MyPlaylists" : "SignIn"
-      }
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: "#fff" },
-      }}
-    >
-      <RootStack.Screen
-        name="SignIn"
-        component={SignIn}
-        options={{ stackAnimation: "fade" }}
-      />
+  const authenticatedRoutes = (
+    <>
       <RootStack.Screen
         name="MyPlaylists"
         component={MyPlaylists}
@@ -46,11 +30,28 @@ export function Root(props: Props) {
         component={Player}
         options={{ stackPresentation: "modal" }}
       />
+    </>
+  );
+
+  return (
+    <RootStack.Navigator
+      initialRouteName={currentUser.isAuthenticated ? "MyPlaylists" : "SignIn"}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: "#fff" },
+      }}
+    >
+      <RootStack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ stackAnimation: "fade" }}
+      />
+      {currentUser.isAuthenticated ? authenticatedRoutes : null}
     </RootStack.Navigator>
   );
 }
 
-function Player(props: Props) {
+function Player() {
   const [playerSelection] = useRecoilState(playerSelectionState);
 
   return (
@@ -87,7 +88,7 @@ function Player(props: Props) {
 export default function Navigation(props: Props) {
   return (
     <NavigationContainer>
-      <Root initialData={props.initialData} />
+      <Root />
     </NavigationContainer>
   );
 }

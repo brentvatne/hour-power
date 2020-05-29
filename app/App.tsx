@@ -20,7 +20,20 @@ import PlaybackDaemon from "./components/PlaybackDaemon";
 import useAssets from "./hooks/useAssets";
 import usePersistedData from "./hooks/usePersistedData";
 
-export default function App() {
+export default function AppContainer() {
+  return (
+    <>
+      <RecoilRoot>
+        <SafeAreaProvider>
+          <App />
+        </SafeAreaProvider>
+      </RecoilRoot>
+      <StatusBar style="default" />
+    </>
+  );
+}
+
+function App() {
   let [fontsLoaded] = useFonts({
     SourceSansPro_300Light,
     SourceSansPro_400Regular,
@@ -32,7 +45,7 @@ export default function App() {
   });
 
   let assetsLoaded = useAssets({ ...icons, ...images });
-  let [dataLoaded, data] = usePersistedData();
+  let dataLoaded = usePersistedData();
 
   if (!fontsLoaded || !assetsLoaded || !dataLoaded) {
     return <AppLoading />;
@@ -40,13 +53,8 @@ export default function App() {
 
   return (
     <>
-      <RecoilRoot>
-        <SafeAreaProvider>
-          <Navigation initialData={data} />
-          <PlaybackDaemon />
-        </SafeAreaProvider>
-      </RecoilRoot>
-      <StatusBar style="default" />
+      <Navigation />
+      <PlaybackDaemon />
     </>
   );
 }

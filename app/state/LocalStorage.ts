@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { Credentials, JsonCompatible } from "../types";
+import { PersistedData, Credentials, JsonCompatible } from "../types";
 
 const KEY = "@hourpower/";
 
@@ -7,7 +7,7 @@ export async function setAuthCredentialsAsync(credentials: Credentials) {
   await setAsync("credentials", credentials);
 }
 
-export async function getAuthCredentialsAsync(): Promise<Credentials>  {
+export async function getAuthCredentialsAsync(): Promise<Credentials> {
   return getAsync("credentials", {});
 }
 
@@ -42,7 +42,7 @@ export async function saveAsync(data: any) {
   await AsyncStorage.setItem(KEY, JSON.stringify(data));
 }
 
-export async function loadAsync() {
+export async function loadAsync(): Promise<PersistedData | null> {
   try {
     const data = await AsyncStorage.getItem(KEY);
     if (!data) {

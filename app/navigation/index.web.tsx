@@ -6,41 +6,44 @@ import { useRecoilState } from "recoil";
 import * as Linking from "expo-linking";
 import { Fontisto } from "@expo/vector-icons";
 
-import { PersistedData } from "../types";
 import SignIn from "../screens/SignIn";
 import MyPlaylists from "../screens/MyPlaylists";
 import DevicePicker from "../screens/DevicePicker";
 import PlayerController from "../screens/PlayerController";
-import { playerSelectionState } from "../state";
-
-type Props = {
-  initialData: null | PersistedData;
-};
+import { playerSelectionState, currentUserState } from "../state";
 
 const RootStack = createStackNavigator();
 const PlayerStack = createStackNavigator();
 
-export function Root(props: Props) {
+export function Root() {
+  const [currentUser] = useRecoilState(currentUserState);
+
+  const authenticatedRoutes = (
+    <>
+      <RootStack.Screen name="MyPlaylists" component={MyPlaylists} />
+      <RootStack.Screen name="Player" component={Player} />
+    </>
+  );
+
   return (
     <RootStack.Navigator
-      initialRouteName={
-        props.initialData?.credentials?.token ? "MyPlaylists" : "SignIn"
-      }
+      initialRouteName={currentUser.isAuthenticated ? "MyPlaylists" : "SignIn"}
       screenOptions={{ headerShown: false }}
     >
       <RootStack.Screen name="SignIn" component={SignIn} />
-      <RootStack.Screen name="MyPlaylists" component={MyPlaylists} />
-      <RootStack.Screen name="Player" component={Player} />
+      {currentUser.isAuthenticated ? authenticatedRoutes : null}
     </RootStack.Navigator>
   );
 }
 
-function Player({ navigation, route }: any) {
+function Player() {
   const [playerSelection] = useRecoilState(playerSelectionState);
 
   return (
     <PlayerStack.Navigator
-      initialRouteName={"DevicePicker"}
+      initialRouteName={
+        playerSelection.device ? "PlayerController" : "DevicePicker"
+      }
       screenOptions={({ navigation }: any) => {
         if (navigation.dangerouslyGetState().routes.length === 1) {
           return {
@@ -79,25 +82,25 @@ function ClosePlayerButton({ navigation }: any) {
   );
 }
 
-// URLs maybe don't make a lot of sense here...
+// TODO: if not authenticated, always go to sign in...
 const linking = {
   prefixes: [Linking.makeUrl()],
   config: {
     SignIn: "/sign-in",
-    MyPlaylists: "/",
+    MyPlaylists: "/playlists",
     Player: {
       screens: {
         DevicePicker: "/devices",
-        PlayerController: "/now-playing",
+        PlayerController: "/playing",
       },
     },
   },
 };
 
-export default function Navigation(props: Props) {
+export default function Navigation() {
   return (
     <NavigationContainer linking={linking}>
-      <Root initialData={props.initialData} />
+      <Root />
     </NavigationContainer>
   );
 }
