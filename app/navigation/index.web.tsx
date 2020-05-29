@@ -35,15 +35,12 @@ export function Root(props: Props) {
   );
 }
 
-function Player() {
+function Player({ navigation, route }: any) {
   const [playerSelection] = useRecoilState(playerSelectionState);
 
   return (
     <PlayerStack.Navigator
-      initialRouteName={
-        // Jump straight to player if we have device selected already
-        playerSelection.device ? "PlayerController" : "DevicePicker"
-      }
+      initialRouteName={"DevicePicker"}
       screenOptions={({ navigation }: any) => {
         if (navigation.dangerouslyGetState().routes.length === 1) {
           return {
@@ -85,11 +82,21 @@ function ClosePlayerButton({ navigation }: any) {
 // URLs maybe don't make a lot of sense here...
 const linking = {
   prefixes: [Linking.makeUrl()],
+  config: {
+    SignIn: "/sign-in",
+    MyPlaylists: "/",
+    Player: {
+      screens: {
+        DevicePicker: "/devices",
+        PlayerController: "/now-playing",
+      },
+    },
+  },
 };
 
 export default function Navigation(props: Props) {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Root initialData={props.initialData} />
     </NavigationContainer>
   );

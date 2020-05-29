@@ -9,8 +9,6 @@ import * as Spacer from "../components/Spacer";
 import * as Button from "../components/Button";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
 
-const { height: windowHeight } = Dimensions.get("window");
-
 export default function SignIn({ navigation }: any) {
   const { isAuthenticated, error, authenticateAsync } = useSpotifyAuth();
   const insets = useSafeArea();

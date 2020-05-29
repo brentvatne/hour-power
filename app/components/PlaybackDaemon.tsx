@@ -67,6 +67,11 @@ export default function PlaybackDaemon() {
 
   const playTrackForTimeAsync = useCallback(
     async (elapsedTime, selection) => {
+      // If we end up calling play with no device or no playlist, then just bail out
+      if (!selection.device || !selection.playlist) {
+        return;
+      }
+
       const realTrackNumber = Math.floor(elapsedTime / selection.trackDuration);
       const trackIndex = realTrackNumber % selection.tracks.length;
       const track = selection.tracks[trackIndex];

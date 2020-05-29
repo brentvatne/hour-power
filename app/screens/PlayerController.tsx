@@ -22,6 +22,12 @@ export default function PlayerController({ navigation }: any) {
     playbackStatusState
   );
 
+  if (!playerSelection.playlist) {
+    navigation.navigate("MyPlaylists");
+  } else if (!playerSelection.device) {
+    navigation.navigate("DevicePicker");
+  }
+
   navigation.setOptions({
     title: playerSelection.playlist?.name,
   });
