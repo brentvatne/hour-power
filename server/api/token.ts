@@ -5,6 +5,44 @@ import { NowRequest, NowResponse } from "@now/node";
 const CLIENT_ID = "YOUR_CLIENT_ID_HERE";
 const CLIENT_SECRET = "YOUR_CLIENT_SECRET_HERE";
 
+export default async function handler(req: NowRequest, res: NowResponse) {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+  );
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
+
+  if (!(req.body.code && req.body.redirectUri) && !req.body.refreshToken) {
+    res.status(500).json({
+      error: `Invalid request body, please include either: code and redirectUri or refreshToken`,
+    });
+    return;
+  }
+
+  try {
+    if (req.body.refreshToken) {
+      const { token, expiresIn } = await refreshTokenAsync(
+        req.body.refreshToken
+      );
+      res.status(200).json({ token, expiresIn });
+    } else {
+      const { token, refreshToken, expiresIn } = await fetchTokenAsync({
+        code: req.body.code,
+        redirectUri: req.body.redirectUri,
+      });
+      res.status(200).json({ token, refreshToken, expiresIn });
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+}
+
 async function postAsync(params: any) {
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
@@ -60,31 +98,5 @@ async function refreshTokenAsync(refreshToken) {
     return { token: result.access_token, expiresIn: result.expires_in };
   } else {
     throw new Error(JSON.stringify(result));
-  }
-}
-
-export default async function (req: NowRequest, res: NowResponse) {
-  if (!(req.body.code && req.body.redirectUri) && !req.body.refreshToken) {
-    res.status(500).json({
-      error: `Invalid request body, please include either: code and redirectUri or refreshToken`,
-    });
-    return;
-  }
-
-  try {
-    if (req.body.refreshToken) {
-      const { token, expiresIn } = await refreshTokenAsync(
-        req.body.refreshToken
-      );
-      res.status(200).json({ token, expiresIn });
-    } else {
-      const { token, refreshToken, expiresIn } = await fetchTokenAsync({
-        code: req.body.code,
-        redirectUri: req.body.redirectUri,
-      });
-      res.status(200).json({ token, refreshToken, expiresIn });
-    }
-  } catch (e) {
-    res.status(500).json({ error: e.message });
   }
 }
