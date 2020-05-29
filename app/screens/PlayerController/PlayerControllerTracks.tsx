@@ -20,7 +20,7 @@ export default function PlayerControllerTracks({
   transtioningRef.current?.animateNextTransition();
 
   return (
-    <View style={{ paddingTop: Platform.OS === "android" ? 10 : 0 }}>
+    <View style={{ paddingTop: Platform.OS === "ios" ? 0 : 10 }}>
       <View
         style={{
           flexDirection: "row",
@@ -30,13 +30,9 @@ export default function PlayerControllerTracks({
           marginBottom: 20,
         }}
       >
-        <TrackImage track={previous} key={previous?.id ?? "prev"} faded />
-        <TrackImage
-          track={current}
-          size="large"
-          key={current?.id ?? "current"}
-        />
-        <TrackImage track={next} key={next?.id ?? "next"} faded />
+        <TrackImage track={previous} key={"prev"} faded />
+        <TrackImage track={current} size="large" key={"current"} />
+        <TrackImage track={next} key={"next"} faded />
       </View>
       <View
         style={{
@@ -47,10 +43,10 @@ export default function PlayerControllerTracks({
         }}
       >
         <Text.Bold numberOfLines={1} style={{ fontSize: 24 }}>
-          {current?.name ? current.name : "Untitled"}
+          {current?.name ?? ' '}
         </Text.Bold>
         <Text.Regular numberOfLines={1} style={{ fontSize: 20 }}>
-          {current?.artists ? current.artists.join(", ") : "Unknown"}
+          {current?.artists ?? ' '}
         </Text.Regular>
       </View>
     </View>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { useAuthRequest, makeRedirectUri } from "expo-auth-session";
+import * as WebBrowser from "expo-web-browser";
 import Constants from "expo-constants";
-
 import { fetchTokenAsync } from "../api";
 import * as LocalStorage from "../state/LocalStorage";
 
@@ -10,12 +11,17 @@ const discovery = {
   tokenEndpoint: "https://accounts.spotify.com/api/token",
 };
 
-const USE_PROXY = Constants.appOwnership === "standalone" ? false : true;
+const USE_PROXY = Platform.select({
+  web: false,
+  default: Constants.appOwnership === "standalone" ? false : true,
+});
 const REDIRECT_URI = makeRedirectUri({
   useProxy: USE_PROXY,
   native: "hourpower://redirect",
 });
 const CLIENT_ID = "26e6599e588547c4b4615b0723b0f15f";
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function useSpotifyAuth() {
   const [error, setError] = useState<any | null>(null);
@@ -45,6 +51,8 @@ export default function useSpotifyAuth() {
     },
     discovery
   );
+
+  console.log(authRequest);
 
   useEffect(() => {
     async function updateFromAuthResponseAsync() {

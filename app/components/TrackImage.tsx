@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, View } from "react-native";
 // @ts-ignore
 import FadeIn from "react-native-fade-in-image";
 
@@ -19,14 +19,18 @@ export default function TrackImage({
 }) {
   let source;
   if (!track || track === null) {
-    source = images.placeholder;
+    source = null;
   } else {
     source = track.images[0] ? { uri: track.images[0] } : images.placeholder;
   }
 
   return (
     <FadeIn style={[size === "large" && styles.large, faded && styles.faded]}>
-      <Image source={source} style={[{ height: 120, width: 120 }, style]} />
+      {source === null ? (
+        <View style={[{ width: 120, height: 120 }, style]} />
+      ) : (
+        <Image source={source} style={[{ height: 120, width: 120 }, style]} />
+      )}
     </FadeIn>
   );
 }
@@ -43,5 +47,5 @@ const styles = StyleSheet.create({
   },
   faded: {
     opacity: 0.6,
-  }
+  },
 });

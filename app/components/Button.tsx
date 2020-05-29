@@ -5,6 +5,7 @@ import { Fontisto } from "@expo/vector-icons";
 
 import * as Text from "../components/Text";
 import { colors } from "../styleguide";
+import alertAsync from "../util/alertAsync";
 
 type ButtonProps =
   | {
@@ -24,12 +25,11 @@ export function Green(props: ButtonProps) {
       onPress={() => props.onPress()}
       underlayColor="green"
       style={{
+        marginHorizontal: 20,
         backgroundColor: colors.neongreen,
         paddingVertical: 20,
-        marginHorizontal: 30,
         borderRadius: 5,
-        maxWidth: 400,
-        alignSelf: "stretch",
+        paddingHorizontal: 30,
       }}
     >
       <View
@@ -60,10 +60,11 @@ export function OpenSpotify() {
         try {
           await Linking.openURL("spotify://");
         } catch (e) {
-          Alert.alert(
-            "Unable to open Spotify",
-            "It looks like you do not have Spotify installed! If you do, then, uh, sorry. Go start it manually the old fashioned way."
-          );
+          alertAsync({
+            title: "Unable to open Spotify",
+            message:
+              "It looks like you do not have Spotify installed! If you do, then, uh, sorry. Go start it manually the old fashioned way.",
+          });
         }
       }}
     >

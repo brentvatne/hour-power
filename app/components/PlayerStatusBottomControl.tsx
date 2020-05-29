@@ -1,7 +1,12 @@
 import React, { useMemo } from "react";
-import { TouchableWithoutFeedback, StyleSheet, View } from "react-native";
+import {
+  Platform,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  View,
+} from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useRecoilState } from "recoil";
 
 import * as Text from "../components/Text";
@@ -73,16 +78,27 @@ export default function PlayerStatusBottomControl() {
 }
 
 const styles = StyleSheet.create({
+  // @ts-ignore: position fixed is fine
   container: {
     backgroundColor: "#000",
-    elevation: 3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 10,
     shadowColor: "black",
     shadowOpacity: 0.4,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    ...Platform.select({
+      web: {
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+      },
+      default: {
+        elevation: 3,
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+      },
+    }),
   },
 });

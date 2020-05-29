@@ -1,5 +1,4 @@
 import { useEffect, useRef, useCallback } from "react";
-import { Alert } from "react-native";
 import { useRecoilState } from "recoil";
 import { activateKeepAwake, deactivateKeepAwake } from "expo-keep-awake";
 import { useAppState } from "@react-native-community/hooks";
@@ -7,6 +6,7 @@ import { useAppState } from "@react-native-community/hooks";
 import useInterval from "../hooks/useInterval";
 import { playerSelectionState, playbackStatusState } from "../state";
 import { Playlist, playTrackAsync, pauseAsync } from "../api";
+import alertAsync from "../util/alertAsync";
 
 // A power hour in ms
 const ONE_HOUR = 60000 * 60;
@@ -24,10 +24,11 @@ export default function PlaybackDaemon() {
 
   const handleAppBackgrounded = useCallback(() => {
     if (playbackStatus.isPlaying) {
-      Alert.alert(
-        "Power hour paused",
-        "The Hour Power app needs to be open and in the foreground while you're doing the power hour! You can resume now that you're back. Just, uh, don't go away again."
-      );
+      alertAsync({
+        title: "Power hour paused",
+        message:
+          "The Hour Power app needs to be open and in the foreground while you're doing the power hour! You can resume now that you're back. Just, uh, don't go away again.",
+      });
 
       setPlaybackStatus((oldPlaybackStatus) => ({
         ...oldPlaybackStatus,
@@ -38,6 +39,7 @@ export default function PlaybackDaemon() {
 
   const appState = useAppState();
   useEffect(() => {
+    // TODO(web): remove this requirement by playing sound on repeat in background
     if (appState === "background") {
       handleAppBackgrounded();
     }
@@ -91,10 +93,10 @@ export default function PlaybackDaemon() {
           time: trackTime,
         });
       } catch (e) {
-        Alert.alert(
-          "Uh oh!",
-          `Something went wrong when playing the track, maybe double check that the device you want to use is still available.`
-        );
+        alertAsync({
+          title: "Uh oh!",
+          message: `Something went wrong when playing the track, maybe double check that the device you want to use is still available.`,
+        });
 
         // Something went wrong so we need to pause, can't keep playing
         setPlaybackStatus((oldPlaybackStatus) => ({
@@ -159,10 +161,12 @@ export default function PlaybackDaemon() {
   // Switch tracks every time we hit a certain duration
   useEffect(() => {
     if (playbackStatus.elapsedTime > ONE_HOUR) {
-      Alert.alert(
-        "Power hour completed!",
-        "Wow, how anti-climactic. Maybe in a future update this will be more interesting."
-      );
+      alertAsync({
+        title: "Power hour completed!",
+        message:
+          "Wow, how anti-climactic. Maybe in a future update this will be more interesting.",
+      });
+
       setPlaybackStatus((oldPlaybackStatus) => ({
         ...oldPlaybackStatus,
         isPlaying: false,

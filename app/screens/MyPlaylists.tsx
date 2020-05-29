@@ -8,6 +8,7 @@ import React, {
 import {
   ActivityIndicator,
   Dimensions,
+  FlatList,
   Platform,
   Image,
   View,
@@ -25,6 +26,7 @@ import * as Button from "../components/Button";
 import * as LocalStorage from "../state/LocalStorage";
 import * as Text from "../components/Text";
 import * as Spacer from "../components/Spacer";
+import confirmAsync from "../util/confirmAsync";
 import StatusBar from "../components/StatusBar";
 import PlayerStatusBottomControl, {
   PLAYER_STATUS_BOTTOM_CONTROL_HEIGHT,
@@ -33,6 +35,8 @@ import { fetchPlaylistsAsync, fetchTracksAsync, Playlist, Track } from "../api";
 import { PlaylistItem } from "../components/playlists";
 import { playbackStatusState, playerSelectionState } from "../state";
 import { colors, images } from "../styleguide";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 function MyPlaylistsHeader(props: any) {
   const insets = useSafeArea();
@@ -63,14 +67,14 @@ function MyPlaylistsHeader(props: any) {
         source={images.background}
         style={{
           position: "absolute",
-          resizeMode: "contain",
+          resizeMode: "cover",
           top: -150,
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: -30,
         }}
       />
-      <Text.Title style={{ color: "#fff", fontSize: 30 }}>
+      <Text.Title style={{ color: "#fff", fontSize: 30, zIndex: 1000 }}>
         Your Playlists
       </Text.Title>
       <View
@@ -81,21 +85,17 @@ function MyPlaylistsHeader(props: any) {
         }}
       >
         <BorderlessButton
-          onPress={() => {
-            Alert.alert(
-              "Sign out",
-              "Are you sure you want to sign out? I mean, it doesn't really matter, just thought I'd check in with you.",
-              [
-                {
-                  text: "Continue",
-                  onPress: clearAllState,
-                },
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-              ]
-            );
+          onPress={async () => {
+            if (
+              await confirmAsync({
+                title: "Sign out?",
+                message:
+                  "Are you sure you want to sign out? I mean, it doesn't really matter, just thought I'd check in with you.",
+                confirmButtonText: "Continue",
+              })
+            ) {
+              clearAllState();
+            }
           }}
         >
           <Fontisto name="player-settings" size={20} color="#fff" />
@@ -106,17 +106,16 @@ function MyPlaylistsHeader(props: any) {
 }
 
 function LoadingPlaceholder() {
-  const dimensions = Dimensions.get('window');
+  const dimensions = Dimensions.get("window");
 
   return (
     <View
       style={{
-        flex: 1,
+        height: dimensions.height - 100,
+        paddingTop: 60,
         borderRadius: 10,
         alignItems: "center",
         backgroundColor: "#fff",
-        height: dimensions.height - 100,
-        paddingTop: 30,
         paddingBottom: 30,
       }}
     >
@@ -138,9 +137,19 @@ function TrackLoadingOverlay() {
   return (
     <Animated.View
       style={{
+        // On web the container size will grow as the FlatList grows and so
+        // centering on vertical axis will result in the loading text going off
+        // screen
+        ...Platform.select({
+          web: {
+            paddingTop: "30vh",
+          },
+          default: {
+            justifyContent: "center",
+          },
+        }),
         alignItems: "center",
-        justifyContent: "center",
-        paddingBottom: 200,
+        paddingBottom: 150,
         backgroundColor: "rgba(0,0,0,0.7)",
         opacity: appearValue.current,
         position: "absolute",
@@ -207,13 +216,13 @@ function List({
     async (item: Playlist) => {
       // If a playlist is already selected and playing, ensure user wants to stop it rather than just switching playlists willy nilly
       if (playerSelection.playlist && playerSelection.playlist.id !== item.id) {
-        let selectedOption = await alertAsync({
-          title: `Start a new playlist?`,
-          message: `You previously selected "${playerSelection.playlist?.name}", if you continue we will switch to "${item.name}".`,
-          options: ["Continue", "Cancel"],
-        });
-
-        if (selectedOption === "Cancel") {
+        if (
+          !(await confirmAsync({
+            title: `Start a new playlist?`,
+            message: `You previously selected "${playerSelection.playlist?.name}", if you continue we will switch to "${item.name}".`,
+            confirmButtonText: "Continue",
+          }))
+        ) {
           return;
         }
       }
@@ -249,9 +258,33 @@ function List({
     [playerSelection, setPlayerSelection, navigation]
   );
 
+  const renderItem = useCallback(
+    ({ item, index }: { item: Playlist; index: number }) => (
+      <PlaylistItem
+        data={item}
+        key={item.id}
+        onPress={() => requestAnimationFrame(() => handlePressItem(item))}
+        style={[
+          // rounded corners on the top of the first row
+          index === 0
+            ? { borderTopLeftRadius: 10, borderTopRightRadius: 10 }
+            : null,
+          // rounded corners on the bottom of the last row
+          index === playlists!.length - 1
+            ? {
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
+              }
+            : null,
+        ]}
+      />
+    ),
+    [playlists, handlePressItem]
+  );
+
   return (
     <View style={{ flex: 1 }}>
-      <Animated.FlatList
+      <AnimatedFlatList
         // @ts-ignore: something about Animated FlatList breaks data type?
         data={playlists}
         scrollEventThrottle={16}
@@ -269,26 +302,8 @@ function List({
             <EmptyListPlaceholder />
           )
         }
-        renderItem={({ item, index }: { item: Playlist; index: number }) => (
-          <PlaylistItem
-            data={item}
-            key={item.id}
-            onPress={() => handlePressItem(item)}
-            style={[
-              // rounded corners on the top of the first row
-              index === 0
-                ? { borderTopLeftRadius: 10, borderTopRightRadius: 10 }
-                : null,
-              // rounded corners on the bottom of the last row
-              index === playlists!.length - 1
-                ? {
-                    borderBottomLeftRadius: 10,
-                    borderBottomRightRadius: 10,
-                  }
-                : null,
-            ]}
-          />
-        )}
+        keyExtractor={(item: Playlist) => item.id}
+        renderItem={renderItem}
         style={{ flex: 1, backgroundColor: "#000" }}
         contentContainerStyle={{
           paddingBottom:
@@ -339,26 +354,4 @@ export default function MyPlaylists(props: any) {
       />
     </View>
   );
-}
-
-async function alertAsync({
-  title,
-  message,
-  options,
-}: {
-  title: string;
-  message: string;
-  options: string[];
-}) {
-  return new Promise((resolve, reject) => {
-    Alert.alert(
-      title,
-      message,
-      options.map((text) => ({
-        text,
-        onPress: () => resolve(text),
-        style: text === "Cancel" ? "cancel" : undefined,
-      }))
-    );
-  });
 }

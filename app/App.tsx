@@ -1,6 +1,4 @@
 import React from "react";
-import { View, Text } from 'react-native';
-
 import { YellowBox } from "react-native";
 import { AppLoading } from "expo";
 import { Fontisto, Ionicons } from "@expo/vector-icons";

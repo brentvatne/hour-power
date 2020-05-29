@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 import { useSafeArea } from "react-native-safe-area-context";
@@ -34,7 +34,7 @@ export default function SignIn({ navigation }: any) {
         paddingTop: insets.top,
         alignItems: "center",
         justifyContent: "center",
-        minHeight: windowHeight,
+        height: "100%",
       }}
     >
       <Text.Title>⚡️🎶️️</Text.Title>

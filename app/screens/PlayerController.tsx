@@ -1,11 +1,10 @@
 import React, { useEffect, useCallback, useMemo } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useResetRecoilState, useRecoilState } from "recoil";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 
 import { playerSelectionState, playbackStatusState } from "../state";
-import StatusBar from "../components/StatusBar";
 import * as Spacer from "../components/Spacer";
 import * as Text from "../components/Text";
 import PlayerControllerHeader from "./PlayerController/PlayerControllerHeader";
@@ -54,13 +53,14 @@ export default function PlayerController({ navigation }: any) {
   }, [resetPlaybackStatus, resetPlayerSelection]);
 
   const memoizedHeader = useMemo(
-    () => (
-      <PlayerControllerHeader
-        title={playerSelection.playlist?.name}
-        navigation={navigation}
-      />
-    ),
-    [navigation, playerSelection.playlist?.name]
+    () =>
+      Platform.OS === "ios" ? (
+        <PlayerControllerHeader
+          title={playerSelection.playlist?.name}
+          navigation={navigation}
+        />
+      ) : null,
+    [Platform.OS, navigation, playerSelection.playlist?.name]
   );
 
   const memoizedTracksDisplay = useMemo(

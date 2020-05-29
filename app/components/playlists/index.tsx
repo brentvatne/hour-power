@@ -1,5 +1,11 @@
 import * as React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import {
+  Platform,
+  TouchableHighlight,
+  Image,
+  StyleSheet,
+  View,
+} from "react-native";
 import HTMLView from "react-native-htmlview";
 import { RectButton } from "react-native-gesture-handler";
 // @ts-ignore: oh my, no types from my very own library, que verguenza
@@ -45,6 +51,26 @@ export function PlaylistDescription({ text }: { text: string | null }) {
   );
 }
 
+function PlatformRectButton({ onPress, children }: any) {
+  if (Platform.OS === "web") {
+    return (
+      <TouchableHighlight
+        activeOpacity={0.9}
+        underlayColor="#eee"
+        onPress={onPress}
+      >
+        {children}
+      </TouchableHighlight>
+    );
+  } else {
+    return (
+      <RectButton activeOpacity={0.1} onPress={onPress}>
+        {children}
+      </RectButton>
+    );
+  }
+}
+
 export function PlaylistItem({
   data,
   style,
@@ -56,7 +82,7 @@ export function PlaylistItem({
 }) {
   return (
     <View style={[style, { backgroundColor: "#fff" }]}>
-      <RectButton activeOpacity={0.1} onPress={onPress}>
+      <PlatformRectButton onPress={onPress}>
         <View
           style={{
             flex: 1,
@@ -74,7 +100,7 @@ export function PlaylistItem({
             <PlaylistDescription text={data.description || "🎶"} />
           </View>
         </View>
-      </RectButton>
+      </PlatformRectButton>
     </View>
   );
 }

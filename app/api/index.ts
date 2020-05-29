@@ -35,9 +35,12 @@ export type Device = {
 
 /** Our server */
 
-const TOKEN_ENDPOINT = __DEV__
-  ? "http://localhost:3000/api/token"
-  : "https://YOUR_PRODUCTION_ENDPOINT";
+// Change these to whatever makes sense for your app!
+
+const TOKEN_ENDPOINT = "https://hourpower.bront.xyz/api/token";
+// const TOKEN_ENDPOINT = __DEV__
+//   ? "http://localhost:3000/api/token"
+//   : "https://hourpower-server.now.sh/api/token";
 
 export async function refreshTokenAsync(refreshToken: string) {
   const response = await fetch(TOKEN_ENDPOINT, {
