@@ -46,7 +46,8 @@ export function Root() {
         component={SignIn}
         options={{ stackAnimation: "fade" }}
       />
-      {currentUser.isAuthenticated ? authenticatedRoutes : null}
+      {/* Currently just always make authenticated routes available on native */}
+      {authenticatedRoutes}
     </RootStack.Navigator>
   );
 }

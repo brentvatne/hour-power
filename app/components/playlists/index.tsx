@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  Platform,
-  TouchableHighlight,
-  Image,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Platform, Image, StyleSheet, View } from "react-native";
 import HTMLView from "react-native-htmlview";
 import { RectButton } from "react-native-gesture-handler";
 // @ts-ignore: oh my, no types from my very own library, que verguenza
@@ -15,6 +9,7 @@ import * as WebBrowser from "expo-web-browser";
 import { Playlist } from "../../api";
 import * as Text from "../Text";
 import * as Spacer from "../Spacer";
+import AnchorButton from "../AnchorButton";
 
 export function PlaylistCover({ images }: { images: string[] }) {
   return (
@@ -53,15 +48,7 @@ export function PlaylistDescription({ text }: { text: string | null }) {
 
 function PlatformRectButton({ onPress, children }: any) {
   if (Platform.OS === "web") {
-    return (
-      <TouchableHighlight
-        activeOpacity={0.9}
-        underlayColor="#eee"
-        onPress={onPress}
-      >
-        {children}
-      </TouchableHighlight>
-    );
+    return <AnchorButton onPress={onPress}>{children}</AnchorButton>;
   } else {
     return (
       <RectButton activeOpacity={0.1} onPress={onPress}>

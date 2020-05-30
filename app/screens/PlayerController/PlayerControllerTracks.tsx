@@ -16,9 +16,6 @@ export default function PlayerControllerTracks({
   current,
   next,
 }: Props) {
-  const transtioningRef = React.useRef<any>();
-  transtioningRef.current?.animateNextTransition();
-
   return (
     <View style={{ paddingTop: Platform.OS === "ios" ? 0 : 10 }}>
       <View

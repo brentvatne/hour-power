@@ -52,8 +52,6 @@ export default function useSpotifyAuth() {
     discovery
   );
 
-  console.log(authRequest);
-
   useEffect(() => {
     async function updateFromAuthResponseAsync() {
       if (authResponse === null) {

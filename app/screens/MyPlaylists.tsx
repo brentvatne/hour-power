@@ -18,7 +18,7 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "react-query";
 import { useSafeArea } from "react-native-safe-area-context";
-import { useResetRecoilState, useSetRecoilState, useRecoilState } from "recoil";
+import { useResetRecoilState, useRecoilState } from "recoil";
 import { Fontisto } from "@expo/vector-icons";
 
 import * as Button from "../components/Button";
@@ -46,14 +46,14 @@ function MyPlaylistsHeader(props: any) {
   const navigation = useNavigation();
   const resetPlayerSelection = useResetRecoilState(playerSelectionState);
   const resetPlaybackStatus = useResetRecoilState(playbackStatusState);
-  const setCurrentUser = useSetRecoilState(currentUserState);
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
   const clearAllState = useCallback(() => {
     LocalStorage.clearAsync();
     resetPlaybackStatus();
     resetPlayerSelection();
-    // We can't reset isAuthenticated or it will become null... Need to reset to false
     setCurrentUser({ isAuthenticated: false });
+    // We can't reset isAuthenticated or it will become null... Need to reset to false
     // @ts-ignore
     navigation.replace("SignIn");
   }, [navigation, resetPlaybackStatus, resetPlayerSelection]);
@@ -148,9 +148,11 @@ function TrackLoadingOverlay() {
         // screen
         ...Platform.select({
           web: {
+            position: "fixed",
             paddingTop: "30vh",
           },
           default: {
+            position: "absolute",
             justifyContent: "center",
           },
         }),
@@ -158,7 +160,6 @@ function TrackLoadingOverlay() {
         paddingBottom: 150,
         backgroundColor: "rgba(0,0,0,0.7)",
         opacity: appearValue.current,
-        position: "absolute",
         top: 0,
         left: 0,
         right: 0,

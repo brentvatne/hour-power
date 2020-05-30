@@ -56,7 +56,10 @@ export default function DevicePicker({ navigation, route }: any) {
   );
 
   const transtioningRef = React.useRef<any>();
-  transtioningRef.current?.animateNextTransition();
+
+  if (Platform.OS === "ios") {
+    transtioningRef.current?.animateNextTransition();
+  }
 
   return (
     <ScrollView style={{ flex: 1 }}>

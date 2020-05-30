@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 import { useSafeArea } from "react-native-safe-area-context";
@@ -15,9 +16,12 @@ export default function SignIn({ navigation }: any) {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const insets = useSafeArea();
 
+  // TODO: Sort this mess out
   useEffect(() => {
-    navigation.replace("MyPlaylists");
-  }, [currentUser.isAuthenticated]);
+    if (currentUser.isAuthenticated && isAuthenticated) {
+      navigation.replace("MyPlaylists");
+    }
+  }, [currentUser, isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -35,10 +39,16 @@ export default function SignIn({ navigation }: any) {
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{
-        paddingTop: insets.top,
+        ...Platform.select({
+          web: {
+            height: "100vh",
+          },
+          default: {
+            height: "100%",
+          },
+        }),
         alignItems: "center",
         justifyContent: "center",
-        height: "100%",
       }}
     >
       <Text.Title>⚡️🎶️️</Text.Title>

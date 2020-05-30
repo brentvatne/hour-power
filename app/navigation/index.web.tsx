@@ -87,7 +87,7 @@ const linking = {
   prefixes: [Linking.makeUrl()],
   config: {
     SignIn: "/sign-in",
-    MyPlaylists: "/playlists",
+    MyPlaylists: "/",
     Player: {
       screens: {
         DevicePicker: "/devices",
