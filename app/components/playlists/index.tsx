@@ -68,7 +68,16 @@ export function PlaylistItem({
   onPress: any;
 }) {
   return (
-    <View style={[style, { backgroundColor: "#fff" }]}>
+    <View
+      style={[
+        style,
+        {
+          backgroundColor: "#fff",
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: "rgba(0,0,0,0.09)",
+        },
+      ]}
+    >
       <PlatformRectButton onPress={onPress}>
         <View
           style={{
