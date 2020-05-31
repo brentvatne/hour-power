@@ -41,7 +41,11 @@ import { colors, images } from "../styleguide";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-function MyPlaylistsHeader(props: any) {
+function MyPlaylistsHeader({
+  animatedScrollValue,
+}: {
+  animatedScrollValue: Animated.Value;
+}) {
   const insets = useSafeArea();
   const navigation = useNavigation();
   const resetPlayerSelection = useResetRecoilState(playerSelectionState);
@@ -58,6 +62,46 @@ function MyPlaylistsHeader(props: any) {
     navigation.replace("SignIn");
   }, [navigation, resetPlaybackStatus, resetPlayerSelection]);
 
+  const imageScale = useMemo(
+    () =>
+      animatedScrollValue.interpolate({
+        inputRange: [-400, 0],
+        outputRange: [5, 1],
+        extrapolateRight: "clamp",
+      }),
+    [animatedScrollValue]
+  );
+
+  const textScale = useMemo(
+    () =>
+      animatedScrollValue.interpolate({
+        inputRange: [-400, 0],
+        outputRange: [2, 1],
+        extrapolateRight: "clamp",
+      }),
+    [animatedScrollValue]
+  );
+
+  const textOpacity = useMemo(
+    () =>
+      animatedScrollValue.interpolate({
+        inputRange: [0, 100],
+        outputRange: [1, 0.1],
+        extrapolateRight: "clamp",
+      }),
+    [animatedScrollValue]
+  );
+
+  const buttonOpacity = useMemo(
+    () =>
+      animatedScrollValue.interpolate({
+        inputRange: [-200, 0, 100],
+        outputRange: [0.1, 1, 0.1],
+        extrapolate: "clamp",
+      }),
+    [animatedScrollValue]
+  );
+
   return (
     <View
       style={{
@@ -69,9 +113,10 @@ function MyPlaylistsHeader(props: any) {
         overflow: "visible",
       }}
     >
-      <Image
+      <Animated.Image
         source={images.background}
         style={{
+          transform: [{ scale: imageScale }],
           position: "absolute",
           resizeMode: "cover",
           top: -150,
@@ -80,11 +125,14 @@ function MyPlaylistsHeader(props: any) {
           bottom: -30,
         }}
       />
-      <Text.Title style={{ color: "#fff", fontSize: 30, zIndex: 1000 }}>
-        Your Playlists
-      </Text.Title>
-      <View
+      <Animated.View style={{ opacity: textOpacity, transform: [{ scale: textScale }] }}>
+        <Text.Title style={{ color: "#fff", fontSize: 30, zIndex: 1000 }}>
+          Your Playlists
+        </Text.Title>
+      </Animated.View>
+      <Animated.View
         style={{
+          opacity: buttonOpacity,
           position: "absolute",
           top: insets.top + (Platform.OS === "ios" ? 15 : 25),
           right: 25,
@@ -106,7 +154,7 @@ function MyPlaylistsHeader(props: any) {
         >
           <Fontisto name="player-settings" size={20} color="#fff" />
         </BorderlessButton>
-      </View>
+      </Animated.View>
     </View>
   );
 }
@@ -289,6 +337,17 @@ function List({
     [playlists, handlePressItem]
   );
 
+  const ListHeaderComponent = useMemo(
+    () => <MyPlaylistsHeader animatedScrollValue={animatedScrollValue} />,
+    [animatedScrollValue]
+  );
+
+  const ListEmptyComponent = useMemo(
+    () =>
+      isFetchingPlaylists ? <LoadingPlaceholder /> : <EmptyListPlaceholder />,
+    [isFetchingPlaylists]
+  );
+
   return (
     <View style={{ flex: 1 }}>
       <AnimatedFlatList
@@ -301,23 +360,14 @@ function List({
             useNativeDriver: true,
           }
         )}
-        ListHeaderComponent={MyPlaylistsHeader}
-        ListEmptyComponent={() =>
-          isFetchingPlaylists ? (
-            <LoadingPlaceholder />
-          ) : (
-            <EmptyListPlaceholder />
-          )
-        }
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(item: Playlist) => item.id}
         renderItem={renderItem}
         style={{ flex: 1, backgroundColor: "#000" }}
         contentContainerStyle={{
           paddingBottom:
             insets.bottom + PLAYER_STATUS_BOTTOM_CONTROL_HEIGHT - 5,
-          borderTopLeftRadius: insets.top ? 10 : 0,
-          borderTopRightRadius: insets.top ? 10 : 0,
-          overflow: "hidden",
         }}
       />
       {isFetchingTracks ? null : <PlayerStatusBottomControl />}
