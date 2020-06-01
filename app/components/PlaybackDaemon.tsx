@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import { Platform } from "react-native";
 import { useRecoilState } from "recoil";
 import { activateKeepAwake, deactivateKeepAwake } from "expo-keep-awake";
 import { useAppState } from "@react-native-community/hooks";
@@ -23,7 +24,7 @@ export default function PlaybackDaemon() {
   const isPlayingRef = useRef<boolean>(playbackStatus.isPlaying);
 
   const handleAppBackgrounded = useCallback(() => {
-    if (playbackStatus.isPlaying) {
+    if (playbackStatus.isPlaying && Platform.OS !== "web") {
       alertAsync({
         title: "Power hour paused",
         message:

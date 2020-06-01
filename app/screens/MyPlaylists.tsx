@@ -10,7 +10,6 @@ import {
   Dimensions,
   FlatList,
   Platform,
-  Image,
   View,
   Animated,
 } from "react-native";
@@ -125,7 +124,9 @@ function MyPlaylistsHeader({
           bottom: -30,
         }}
       />
-      <Animated.View style={{ opacity: textOpacity, transform: [{ scale: textScale }] }}>
+      <Animated.View
+        style={{ opacity: textOpacity, transform: [{ scale: textScale }] }}
+      >
         <Text.Title style={{ color: "#fff", fontSize: 30, zIndex: 1000 }}>
           Your Playlists
         </Text.Title>
@@ -178,18 +179,30 @@ function LoadingPlaceholder() {
   );
 }
 
-function TrackLoadingOverlay() {
+function TrackLoadingOverlay({
+  isFetchingTracks,
+}: {
+  isFetchingTracks: boolean;
+}) {
   let appearValue = useRef(new Animated.Value(0));
 
   useEffect(() => {
-    Animated.spring(appearValue.current, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+    if (isFetchingTracks) {
+      Animated.spring(appearValue.current, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.spring(appearValue.current, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isFetchingTracks]);
 
   return (
     <Animated.View
+      pointerEvents={isFetchingTracks ? "auto" : "none"}
       style={{
         // On web the container size will grow as the FlatList grows and so
         // centering on vertical axis will result in the loading text going off
@@ -371,7 +384,7 @@ function List({
         }}
       />
       {isFetchingTracks ? null : <PlayerStatusBottomControl />}
-      {isFetchingTracks ? <TrackLoadingOverlay /> : null}
+      <TrackLoadingOverlay isFetchingTracks={isFetchingTracks} />
     </View>
   );
 }

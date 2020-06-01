@@ -40,10 +40,10 @@ export default function PlayerControllerTracks({
         }}
       >
         <Text.Bold numberOfLines={1} style={{ fontSize: 24 }}>
-          {current?.name ?? ' '}
+          {current?.name ?? " "}
         </Text.Bold>
         <Text.Regular numberOfLines={1} style={{ fontSize: 20 }}>
-          {current?.artists ?? ' '}
+          {current?.artists ? current?.artists.join(", ") : " "}
         </Text.Regular>
       </View>
     </View>
