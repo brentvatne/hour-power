@@ -104,26 +104,28 @@ function MyPlaylistsHeader({
   return (
     <View
       style={{
-        height: 200,
+        height: Platform.OS === "web" ? 100 : 200,
         paddingTop: insets.top + 10,
-        backgroundColor: "#000",
+        backgroundColor: Platform.OS === "web" ? "transparent" : "#000",
         alignItems: "center",
         justifyContent: "center",
         overflow: "visible",
       }}
     >
-      <Animated.Image
-        source={images.background}
-        style={{
-          transform: [{ scale: imageScale }],
-          position: "absolute",
-          resizeMode: "cover",
-          top: -150,
-          left: 0,
-          right: 0,
-          bottom: -30,
-        }}
-      />
+      {Platform.OS === "web" ? null : (
+        <Animated.Image
+          source={images.background}
+          style={{
+            transform: [{ scale: imageScale }],
+            position: "absolute",
+            resizeMode: "cover",
+            top: -150,
+            left: 0,
+            right: 0,
+            bottom: -30,
+          }}
+        />
+      )}
       <Animated.View
         style={{ opacity: textOpacity, transform: [{ scale: textScale }] }}
       >
@@ -135,8 +137,16 @@ function MyPlaylistsHeader({
         style={{
           opacity: buttonOpacity,
           position: "absolute",
-          top: insets.top + (Platform.OS === "ios" ? 15 : 25),
-          right: 25,
+          ...Platform.select({
+            web: {
+              top: 30,
+              right: 10,
+            },
+            default: {
+              top: insets.top + (Platform.OS === "ios" ? 15 : 25),
+              right: 25,
+            },
+          }),
         }}
       >
         <BorderlessButton
@@ -362,7 +372,28 @@ function List({
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        ...Platform.select({
+          web: {
+            backgroundColor: "rgba(182,138,197,1)",
+          },
+        }),
+      }}
+    >
+      {Platform.OS === "web" ? (
+        <View
+          // @ts-ignore: linear-gradient
+          style={{
+            position: "absolute",
+            height: "100vh",
+            width: "100vw",
+            background: 'linear-gradient(180deg, rgba(65,65,129,1) 0%, rgba(182,138,197,1) 100%)',
+              // "linear-gradient(180deg, rgba(128,108,176,1) 0%, rgba(7,31,90,1) 85%)",
+          }}
+        />
+      ) : null}
       <AnimatedFlatList
         // @ts-ignore: something about Animated FlatList breaks data type?
         data={playlists}
@@ -377,8 +408,20 @@ function List({
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(item: Playlist) => item.id}
         renderItem={renderItem}
-        style={{ flex: 1, backgroundColor: "#000" }}
+        style={{
+          flex: 1,
+          backgroundColor: Platform.OS === "web" ? "transparent" : "#000",
+          ...Platform.select({
+            web: {
+              alignSelf: "center",
+              maxWidth: 1000,
+              width: "100vw",
+              marginHorizontal: 30,
+            },
+          }),
+        }}
         contentContainerStyle={{
+          justifyContent: "center",
           paddingBottom:
             insets.bottom + PLAYER_STATUS_BOTTOM_CONTROL_HEIGHT - 5,
         }}
