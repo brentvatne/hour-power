@@ -24,6 +24,7 @@
     "expo-font": "~8.1.0",
     "expo-keep-awake": "~8.1.0",
     "expo-linking": "~1.0.1",
+    "expo-status-bar": "^1.0.0",
     "expo-updates": "^0.2.7",
     "expo-web-browser": "~8.2.1",
     "patch-package": "^6.2.2",

@@ -74,7 +74,7 @@ export function PlaylistItem({
         {
           backgroundColor: "#fff",
           borderBottomWidth: StyleSheet.hairlineWidth,
-          borderBottomColor: "rgba(0,0,0,0.09)",
+          borderBottomColor: "rgba(230,230,230,1)",
         },
       ]}
     >

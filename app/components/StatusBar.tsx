@@ -1,23 +1,11 @@
 import * as React from "react";
-import { Platform, StatusBar as BaseStatusBar } from "react-native";
+import { Platform } from "react-native";
+import { StatusBar as ExpoStatusBar, StatusBarProps } from "expo-status-bar";
 
-type Props = {
-  style: "inverted" | "default";
-};
-
-export default function StatusBar(props: Props) {
+export default function StatusBar(props: StatusBarProps) {
   if (Platform.OS === "android") {
-    return (
-      <BaseStatusBar
-        backgroundColor="#fff"
-        barStyle="dark-content"
-        animated
-      />
-    );
+    return <ExpoStatusBar />;
   }
 
-  const barStyle =
-    props.style === "inverted" ? "light-content" : "dark-content";
-
-  return <BaseStatusBar barStyle={barStyle} animated={true} />;
+  return <ExpoStatusBar />;
 }
