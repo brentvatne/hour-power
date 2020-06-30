@@ -4,8 +4,8 @@ import { StatusBar as ExpoStatusBar, StatusBarProps } from "expo-status-bar";
 
 export default function StatusBar(props: StatusBarProps) {
   if (Platform.OS === "android") {
-    return <ExpoStatusBar />;
+    return <ExpoStatusBar animated style="auto" {...props} />;
   }
 
-  return <ExpoStatusBar />;
+  return <ExpoStatusBar animated style="auto" {...props} />;
 }

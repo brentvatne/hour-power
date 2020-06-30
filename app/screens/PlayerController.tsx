@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useMemo } from "react";
 import { Platform, View } from "react-native";
 import { useResetRecoilState, useRecoilState } from "recoil";
 import { BorderlessButton } from "react-native-gesture-handler";
+import StatusBar from "../components/StatusBar";
 import { Fontisto } from "@expo/vector-icons";
 
 import { playerSelectionState, playbackStatusState } from "../state";
@@ -145,6 +146,7 @@ export default function PlayerController({ navigation }: any) {
       <View style={{ flex: 1, justifyContent: "flex-end" }}>
         {memoizedDeviceControl}
       </View>
+      <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
     </View>
   );
 }

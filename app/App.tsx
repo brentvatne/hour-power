@@ -28,7 +28,7 @@ export default function AppContainer() {
           <App />
         </SafeAreaProvider>
       </RecoilRoot>
-      <StatusBar style="auto" />
+      <StatusBar />
     </>
   );
 }

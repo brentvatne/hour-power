@@ -74,7 +74,7 @@ export default function DevicePicker({ navigation, route }: any) {
         <Spacer.Vertical size={25} />
         <Spacer.HR />
         <Spacer.Vertical size={45} />
-        <StatusBar style="inverted" />
+        <StatusBar style={Platform.OS === "android" ? "auto" : "inverted"} />
         <View
           style={{
             paddingHorizontal: 20,

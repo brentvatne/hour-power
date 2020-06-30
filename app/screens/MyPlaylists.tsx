@@ -453,7 +453,7 @@ export default function MyPlaylists(props: any) {
         isFetchingPlaylists={isFetching}
         animatedScrollValue={scrollValue.current}
       />
-      <StatusBar style="inverted" />
+      <StatusBar style="light" />
       <Animated.View
         style={{
           opacity: underlayOpacity,

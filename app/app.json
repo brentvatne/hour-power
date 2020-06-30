@@ -7,6 +7,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -17,11 +18,6 @@
     },
     "assetBundlePatterns": ["**/*"],
     "primaryColor": "#5a5b99",
-    "androidStatusBar": {
-      "translucent": false,
-      "barStyle": "light-content",
-      "backgroundColor": "#000"
-    },
     "android": {
       "package": "xyz.bront.hourpower",
       "versionCode": 11,

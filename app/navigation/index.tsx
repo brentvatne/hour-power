@@ -28,7 +28,7 @@ export function Root() {
       <RootStack.Screen
         name="Player"
         component={Player}
-        options={{ stackPresentation: "modal" }}
+        options={{ stackPresentation: "modal", headerShown: false }}
       />
     </>
   );
@@ -37,6 +37,9 @@ export function Root() {
     <RootStack.Navigator
       initialRouteName={currentUser.isAuthenticated ? "MyPlaylists" : "SignIn"}
       screenOptions={{
+        headerTopInsetEnabled: true,
+        headerStyle: { backgroundColor: '#000', },
+        headerTintColor: '#fff',
         headerShown: false,
         contentStyle: { backgroundColor: "#fff" },
       }}
@@ -65,6 +68,7 @@ function Player() {
         headerTintColor: "#000",
         headerShown: Platform.OS === "ios" ? false : true,
         headerHideShadow: true,
+        headerTopInsetEnabled: true,
         contentStyle: { backgroundColor: "#fff" },
       }}
     >
@@ -86,7 +90,7 @@ function Player() {
   );
 }
 
-export default function Navigation(props: Props) {
+export default function Navigation() {
   return (
     <NavigationContainer>
       <Root />
