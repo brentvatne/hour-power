@@ -4,7 +4,7 @@
     "slug": "hour-power",
     "scheme": "hourpower",
     "platforms": ["ios", "android", "web"],
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,7 +20,7 @@
     "primaryColor": "#5a5b99",
     "android": {
       "package": "xyz.bront.hourpower",
-      "versionCode": 11,
+      "versionCode": 13,
       "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/foreground.png",
@@ -29,7 +29,8 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "xyz.bront.hourpower"
+      "bundleIdentifier": "xyz.bront.hourpower",
+      "buildNumber": "2"
     }
   }
 }
