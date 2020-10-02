@@ -29,9 +29,11 @@ export default function PlayerController({ navigation }: any) {
     navigation.navigate("DevicePicker");
   }
 
-  navigation.setOptions({
-    title: playerSelection.playlist?.name,
-  });
+  useEffect(() => {
+    navigation.setOptions({
+      title: playerSelection.playlist?.name,
+    });
+  }, [playerSelection.playlist?.name]);
 
   useEffect(() => {
     if (!playbackStatus.isPlaying && playbackStatus.elapsedTime === 0) {

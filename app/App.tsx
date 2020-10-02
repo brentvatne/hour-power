@@ -1,5 +1,5 @@
 import React from "react";
-import { YellowBox } from "react-native";
+import { LogBox } from "react-native";
 import { AppLoading } from "expo";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
 import {
@@ -61,5 +61,5 @@ function App() {
 
 // Note sure where this is coming from, but...
 if (__DEV__) {
-  YellowBox.ignoreWarnings(["Setting a timer for a long period of time"]);
+  LogBox.ignoreLogs(["Setting a timer for a long period of time", "Native splash screen is already"]);
 }
