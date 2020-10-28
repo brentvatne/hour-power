@@ -16,7 +16,7 @@ import {
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "react-query";
-import { useSafeArea } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useResetRecoilState, useRecoilState } from "recoil";
 import { Fontisto } from "@expo/vector-icons";
 
@@ -45,7 +45,7 @@ function MyPlaylistsHeader({
 }: {
   animatedScrollValue: Animated.Value;
 }) {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const resetPlayerSelection = useResetRecoilState(playerSelectionState);
   const resetPlaybackStatus = useResetRecoilState(playbackStatusState);
@@ -282,7 +282,7 @@ function List({
   isFetchingPlaylists: boolean;
   animatedScrollValue: Animated.Value;
 }) {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [isFetchingTracks, setIsFetchingTracks] = useState(false);
   const [playerSelection, setPlayerSelection] = useRecoilState(
@@ -434,7 +434,7 @@ function List({
 
 export default function MyPlaylists(props: any) {
   const { data, isFetching } = useQuery("playlists", fetchPlaylistsAsync);
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const scrollValue = useRef(new Animated.Value(0));
   const underlayOpacity = useMemo(
     () =>

@@ -18,21 +18,6 @@ const PlayerStack = createNativeStackNavigator();
 export function Root() {
   const [currentUser] = useRecoilState(currentUserState);
 
-  const authenticatedRoutes = (
-    <>
-      <RootStack.Screen
-        name="MyPlaylists"
-        component={MyPlaylists}
-        options={{}}
-      />
-      <RootStack.Screen
-        name="Player"
-        component={Player}
-        options={{ stackPresentation: "modal", headerShown: false }}
-      />
-    </>
-  );
-
   return (
     <RootStack.Navigator
       initialRouteName={currentUser.isAuthenticated ? "MyPlaylists" : "SignIn"}
@@ -49,8 +34,16 @@ export function Root() {
         component={SignIn}
         options={{ stackAnimation: "fade" }}
       />
-      {/* Currently just always make authenticated routes available on native */}
-      {authenticatedRoutes}
+      <RootStack.Screen
+        name="MyPlaylists"
+        component={MyPlaylists}
+        options={{}}
+      />
+      <RootStack.Screen
+        name="Player"
+        component={Player}
+        options={{ stackPresentation: "modal", headerShown: false }}
+      />
     </RootStack.Navigator>
   );
 }

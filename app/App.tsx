@@ -61,5 +61,5 @@ function App() {
 
 // Note sure where this is coming from, but...
 if (__DEV__) {
-  LogBox.ignoreLogs(["Setting a timer for a long period of time", "Native splash screen is already"]);
+  LogBox && LogBox.ignoreLogs(["Setting a timer for a long period of time", "Native splash screen is already"]);
 }
