@@ -8409,9 +8409,10 @@ recast@~0.11.12:
     private "~0.1.5"
     source-map "~0.5.0"
 
-recoil@Naturalclar/recoil#react-native:
-  version "0.0.7"
-  resolved "https://codeload.github.com/Naturalclar/recoil/tar.gz/fc01f6cdb02321b7a84aa706e10643f8fb3ab6a5"
+recoil@~0.1.1:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/recoil/-/recoil-0.1.2.tgz#844c612f535826dbe54c977761a67ded16f6d063"
+  integrity sha512-hIRrHlkmW4yITlBFprVYjVPhzPKYrJKoaDrrJtAtbkMeXfXaa/XE5OlyR10n+rNfnKWNToCKb3Z4fo86IGjkzg==
 
 recursive-readdir@2.2.2:
   version "2.2.2"
