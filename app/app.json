@@ -4,7 +4,7 @@
     "slug": "hour-power",
     "scheme": "hourpower",
     "platforms": ["ios", "android", "web"],
-    "version": "1.1.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -30,7 +30,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "xyz.bront.hourpower",
-      "buildNumber": "2"
+      "buildNumber": "3"
     }
   }
 }
