@@ -1,6 +1,6 @@
 import React from "react";
 import { LogBox } from "react-native";
-import { AppLoading } from "expo";
+import AppLoading from "expo-app-loading";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
 import {
   useFonts,
@@ -61,5 +61,9 @@ function App() {
 
 // Note sure where this is coming from, but...
 if (__DEV__) {
-  LogBox && LogBox.ignoreLogs(["Setting a timer for a long period of time", "Native splash screen is already"]);
+  LogBox &&
+    LogBox.ignoreLogs([
+      "Setting a timer for a long period of time",
+      "Native splash screen is already",
+    ]);
 }
