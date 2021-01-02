@@ -328,6 +328,7 @@ function List({
           navigation.navigate("Player");
         });
       } catch (e) {
+        console.log(e);
         alert("Something went wrong while fetching playlist tracks! Ruh roh..");
       } finally {
         setIsFetchingTracks(false);

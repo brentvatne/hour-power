@@ -97,7 +97,7 @@ export async function fetchTracksAsync(playlistId: string) {
   return result.items.map((item: typeof result.items[0]) => {
     const { track } = item;
     // Skip podcast episodes I guess?
-    if (!track.hasOwnProperty("artists")) {
+    if (!track || !track.hasOwnProperty("artists")) {
       return;
     }
 
