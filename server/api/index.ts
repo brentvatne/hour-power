@@ -1,27 +1,54 @@
 import fetch from "node-fetch";
-import { NowRequest, NowResponse } from "@now/node";
+import fastify, { FastifyReply } from "fastify";
 
-// TODO: move to Vercel secrets
-const CLIENT_ID = "YOUR_CLIENT_ID_HERE";
-const CLIENT_SECRET = "YOUR_CLIENT_SECRET_HERE";
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 
-export default async function handler(req: NowRequest, res: NowResponse) {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+if (!CLIENT_ID || !CLIENT_SECRET) {
+  throw new Error(
+    "SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET environment variables must be set"
   );
+}
+
+const server = fastify();
+
+function sendJson(res: FastifyReply, code: number, json: any) {
+  res
+    .status(code)
+    .header("Content-Type", "application/json; charset=utf-8")
+    .send(json);
+}
+
+server.get("/", async (_req, res) => {
+  res.send("Hello 👋");
+});
+
+server.post<{
+  Body: {
+    code: string;
+    redirectUri: string;
+    refreshToken?: string;
+  };
+}>("/token", async (req, res) => {
+  res.headers({
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,OPTIONS",
+    "Access-Control-Allow-Headers":
+      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+  });
+
   if (req.method === "OPTIONS") {
-    res.status(200).end();
+    res.status(200);
+    res.send();
     return;
   }
 
   if (!(req.body.code && req.body.redirectUri) && !req.body.refreshToken) {
-    res.status(500).json({
+    sendJson(res, 500, {
       error: `Invalid request body, please include either: code and redirectUri or refreshToken`,
     });
+
     return;
   }
 
@@ -30,18 +57,19 @@ export default async function handler(req: NowRequest, res: NowResponse) {
       const { token, expiresIn } = await refreshTokenAsync(
         req.body.refreshToken
       );
-      res.status(200).json({ token, expiresIn });
+      sendJson(res, 200, { token, expiresIn });
     } else {
       const { token, refreshToken, expiresIn } = await fetchTokenAsync({
         code: req.body.code,
         redirectUri: req.body.redirectUri,
       });
-      res.status(200).json({ token, refreshToken, expiresIn });
+      sendJson(res, 200, { token, refreshToken, expiresIn });
     }
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    console.log("error!");
+    sendJson(res, 500, { error: e.message });
   }
-}
+});
 
 async function postAsync(params: any) {
   const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -84,7 +112,7 @@ async function fetchTokenAsync({
   }
 }
 
-async function refreshTokenAsync(refreshToken) {
+async function refreshTokenAsync(refreshToken: string) {
   const params = {
     grant_type: "refresh_token",
     refresh_token: refreshToken,
@@ -100,3 +128,11 @@ async function refreshTokenAsync(refreshToken) {
     throw new Error(JSON.stringify(result));
   }
 }
+
+server.listen(process.env.PORT ?? 3000, '0.0.0.0', (err, address) => {
+  if (err) {
+    console.log(err.message);
+    process.exit(1);
+  }
+  console.log(`server listening on ${address}`);
+});

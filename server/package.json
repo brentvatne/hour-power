@@ -1,18 +1,20 @@
 {
-  "name": "server",
+  "name": "hour-power-server",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Brent Vatne",
   "license": "MIT",
   "scripts": {
-    "start": "vc dev"
-  },
-  "devDependencies": {
-    "@now/node": "^1.6.1",
-    "@types/node-fetch": "^2.5.7"
+    "start": "yarn build && yarn api:prod",
+    "build": "tsc",
+    "api:dev": "ts-node api/index.ts",
+    "api:prod": "node build/api/index.js"
   },
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
     "axios": "^0.19.2",
-    "node-fetch": "^2.6.0"
+    "fastify": "^3.9.2",
+    "node-fetch": "^2.6.0",
+    "typescript": "^4.1.3"
   }
 }

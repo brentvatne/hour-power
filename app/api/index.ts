@@ -37,9 +37,9 @@ export type Device = {
 
 // Change these to whatever makes sense for your app!
 
-const TOKEN_ENDPOINT = "https://hourpower.bront.xyz/api/token";
+const TOKEN_ENDPOINT = "https://hour-power.herokuapp.com/token";
 // const TOKEN_ENDPOINT = __DEV__
-//   ? "http://localhost:3000/api/token"
+//   ? "http://localhost:3000/token"
 //   : "https://hourpower-server.now.sh/api/token";
 
 export async function refreshTokenAsync(refreshToken: string) {
@@ -97,7 +97,7 @@ export async function fetchTracksAsync(playlistId: string) {
   return result.items.map((item: typeof result.items[0]) => {
     const { track } = item;
     // Skip podcast episodes I guess?
-    if (!track.hasOwnProperty("artists")) {
+    if (!track || !track.hasOwnProperty("artists")) {
       return;
     }
 
@@ -144,7 +144,7 @@ export async function fetchPlaylistsAsync(): Promise<Playlist[]> {
         name: p.name,
         author: p.owner.display_name,
         description: p.description!,
-        trackCount: p.trackCount,
+        trackCount: p.tracks.total,
         href: p.href,
         uri: p.uri,
         images: p.images.map((image: typeof p.images[0]) => image.url),
