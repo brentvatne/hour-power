@@ -144,7 +144,7 @@ export async function fetchPlaylistsAsync(): Promise<Playlist[]> {
         name: p.name,
         author: p.owner.display_name,
         description: p.description!,
-        trackCount: p.trackCount,
+        trackCount: p.tracks.total,
         href: p.href,
         uri: p.uri,
         images: p.images.map((image: typeof p.images[0]) => image.url),
