@@ -19,6 +19,10 @@ function sendJson(res: FastifyReply, code: number, json: any) {
     .send(json);
 }
 
+server.get("/", async (_req, res) => {
+  res.send("Hello 👋");
+});
+
 server.post<{
   Body: {
     code: string;
