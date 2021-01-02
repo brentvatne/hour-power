@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "hour-power-server",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Brent Vatne",
