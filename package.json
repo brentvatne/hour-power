@@ -1,4 +1,5 @@
 {
+  "name": "hour-power",
   "private": true,
   "scripts": {
     "postinstall": "expo-yarn-workspaces postinstall"
