@@ -3,6 +3,10 @@
   "scripts": {
     "postinstall": "expo-yarn-workspaces postinstall"
   },
+  "engines": {
+    "node": "14.x",
+    "yarn": "1.x"
+  },
   "workspaces": [
     "app",
     "server"

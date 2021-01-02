@@ -4,10 +4,6 @@
   "main": "index.js",
   "author": "Brent Vatne",
   "license": "MIT",
-  "engines": {
-    "node": "14.x",
-    "yarn": "1.x"
-  },
   "scripts": {
     "start": "yarn build && yarn api:prod",
     "build": "tsc",
