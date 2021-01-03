@@ -1,6 +1,9 @@
-import fastify, { FastifyReply } from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 
 const server = fastify();
+
+export type Response = FastifyReply;
+export type Request = FastifyRequest;
 
 server.addHook("preHandler", (req, res, done) => {
   res.headers({

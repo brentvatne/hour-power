@@ -23,3 +23,8 @@ export async function updateOrCreateUserAsync(options: {
     },
   });
 }
+
+export async function findUserByToken(token: string) {
+  const user = await prisma.user.findFirst({ where: { token } });
+  return user;
+}

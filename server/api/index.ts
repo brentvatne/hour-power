@@ -1,4 +1,5 @@
-import server, { sendJSON } from "./server";
+import assert from "assert";
+import server, { sendJSON, Request } from "./server";
 import * as Spotify from "./Spotify";
 import { updateOrCreateUserAsync } from "./db";
 
@@ -8,15 +9,13 @@ server.get("/", async (_req, res) => {
 });
 
 // Tokens: get first token and refresh token
-// TODO: make it only responsible for first authentication
 server.post<{
   Body: {
     code: string;
     redirectUri: string;
-    refreshToken?: string;
   };
 }>("/token", async (req, res) => {
-  if (!(req.body.code && req.body.redirectUri) && !req.body.refreshToken) {
+  if (!req.body.code || !req.body.redirectUri) {
     sendJSON(res, 500, {
       error: `Invalid request body, please include either: code and redirectUri or refreshToken`,
     });
@@ -25,32 +24,43 @@ server.post<{
   }
 
   try {
-    if (!req.body.refreshToken) {
-      const { token, refreshToken, expiresIn } = await Spotify.fetchTokenAsync({
-        code: req.body.code,
-        redirectUri: req.body.redirectUri,
-      });
-      const userInfo = await Spotify.getUserInfoAsync(token);
-      const user = await updateOrCreateUserAsync({
-        token,
-        refreshToken,
-        expiresIn,
-        id: userInfo.id,
-      });
-      sendJSON(res, 200, { token, refreshToken, expiresIn, other: user });
-    } else {
-      // Refreshing
-      // TODO: remove this entirely from the endpoint, we can refresh before
-      // making requests in worker
-      const { token, expiresIn } = await Spotify.refreshTokenAsync(
-        req.body.refreshToken
-      );
-      sendJSON(res, 200, { token, expiresIn });
-    }
+    const { token, refreshToken, expiresIn } = await Spotify.fetchTokenAsync({
+      code: req.body.code,
+      redirectUri: req.body.redirectUri,
+    });
+    const userInfo = await Spotify.getUserInfoAsync(token);
+
+    const user = await updateOrCreateUserAsync({
+      token,
+      refreshToken,
+      expiresIn,
+      id: userInfo.id,
+    });
+    sendJSON(res, 200, { token: user.token });
   } catch (e) {
     sendJSON(res, 500, { error: e.message });
   }
 });
+
+server.get<{
+  Headers: {
+    "Hour-Power-Token": string;
+  };
+}>("/playlists", async (req, res) => {
+  const token = ensureToken(req);
+  try {
+    const playlists = await Spotify.fetchPlaylistsAsync(token);
+    sendJSON(res, 200, playlists);
+  } catch (e) {
+    sendJSON(res, 500, { error: e.message });
+  }
+});
+
+function ensureToken(req: Request): string {
+  const token = req.headers["hour-power-token"];
+  assert(token, "Missing token");
+  return token as string;
+}
 
 // Start server. Needs 0.0.0.0 for Heroku
 server.listen(process.env.PORT ?? 3000, "0.0.0.0", (err, address) => {

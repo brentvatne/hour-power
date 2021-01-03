@@ -44,10 +44,14 @@ export default function useSpotifyAuth() {
         "user-library-read",
       ],
       redirectUri: REDIRECT_URI,
-      extraParams: {
-        // On Android it will just skip right past sign in otherwise
-        show_dialog: "true",
-      },
+      ...Platform.select({
+        android: {
+          extraParams: {
+            // On Android it will just skip right past sign in otherwise
+            show_dialog: "true",
+          },
+        },
+      }),
     },
     discovery
   );
@@ -67,10 +71,7 @@ export default function useSpotifyAuth() {
         if (result.error || !result.token) {
           setError(result.error ?? "Unknown error");
         } else {
-          await LocalStorage.setAuthCredentialsAsync({
-            ...result,
-            lastRefreshed: new Date(),
-          });
+          await LocalStorage.setAuthCredentialsAsync({ ...result });
           setIsAuthenticated(true);
         }
       }

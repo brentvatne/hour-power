@@ -14,6 +14,7 @@
     "@prisma/client": "^2.13.1",
     "@types/node-fetch": "^2.5.7",
     "@types/spotify-web-api-node": "^4.0.2",
+    "assert": "^2.0.0",
     "axios": "^0.19.2",
     "fastify": "^3.9.2",
     "node-fetch": "^2.6.0",

@@ -1,5 +1,7 @@
+import assert from "assert";
 import SpotifyWebApi from "spotify-web-api-node";
 import fetch from "node-fetch";
+import { findUserByToken } from "./db";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
@@ -9,6 +11,48 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
     "SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET environment variables must be set"
   );
 }
+
+export type Playlist = {
+  id: string;
+  name: string;
+  href: string;
+  author: string;
+  description: string | null;
+  trackCount: any;
+  images: string[];
+  uri: string;
+};
+
+export type Track = {
+  id: string;
+  name: string;
+  uri: string;
+  images: string[];
+  artists: string[];
+  isPlayable: boolean;
+  durationMs: number;
+};
+
+export type Device = {
+  id: string | null;
+  name: string;
+  type:
+    | "Computer"
+    | "Tablet"
+    | "Smartphone"
+    | "Speaker"
+    | "TV"
+    | "AVR"
+    | "STB"
+    | "AudioDongle"
+    | "GameConsole"
+    | "CastVideo"
+    | "CastAudio"
+    | "Automobile"
+    | "Unknown";
+  isActive: boolean;
+  isRestricted: boolean;
+};
 
 // Get user id and other info (which we mostly discard) from the Spotify API
 export async function getUserInfoAsync(token: string) {
@@ -77,4 +121,32 @@ async function requestTokenAsync(params: any) {
   });
 
   return await response.json();
+}
+
+// Get playlists
+export async function fetchPlaylistsAsync(token: string): Promise<Playlist[]> {
+  const client = await _getClientAsync(token);
+  const result = await client.getUserPlaylists({ limit: 50 });
+
+  return result.body.items.map(
+    (p: typeof result.body.items[0]) =>
+      ({
+        id: p.id,
+        name: p.name,
+        author: p.owner.display_name,
+        description: p.description!,
+        trackCount: p.tracks.total,
+        href: p.href,
+        uri: p.uri,
+        images: p.images.map((image: typeof p.images[0]) => image.url),
+      } as Playlist)
+  );
+}
+
+async function _getClientAsync(token: string) {
+  const user = await findUserByToken(token);
+  assert(user, "No user found for token");
+  const client = new SpotifyWebApi();
+  client.setAccessToken(user.spotifyToken);
+  return client;
 }

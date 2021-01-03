@@ -10,9 +10,10 @@ generator client {
 }
 
 model User {
-  id                     Int       @id @default(autoincrement())
-  spotifyUserId          String    @unique
+  id                     Int      @id @default(autoincrement())
+  spotifyUserId          String   @unique
   spotifyToken           String
   spotifyRefreshToken    String
   spotifyTokenExpiration DateTime
+  token                  String   @unique @default(cuid()) // really lazy token, not so secure
 }
