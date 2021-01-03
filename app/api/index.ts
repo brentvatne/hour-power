@@ -37,10 +37,10 @@ export type Device = {
 
 // Change these to whatever makes sense for your app!
 
-const TOKEN_ENDPOINT = "https://hour-power.herokuapp.com/token";
-// const TOKEN_ENDPOINT = __DEV__
-//   ? "http://localhost:3000/token"
-//   : "https://hourpower-server.now.sh/api/token";
+// const TOKEN_ENDPOINT = "https://hour-power.herokuapp.com/token";
+const TOKEN_ENDPOINT = __DEV__
+  ? "http://localhost:3000/token"
+  : "https://hour-power.herokuapp.com/token";
 
 export async function refreshTokenAsync(refreshToken: string) {
   const response = await fetch(TOKEN_ENDPOINT, {
